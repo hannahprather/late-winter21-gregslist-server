@@ -1,6 +1,7 @@
 import BaseController from "../utils/BaseController"
 import { housesService } from "../services/HousesService"
 import { Auth0Provider } from '@bcwdev/auth0provider'
+import { Forbidden } from "../utils/Errors"
 export class HousesController extends BaseController {
 
   constructor() {
@@ -41,7 +42,14 @@ export class HousesController extends BaseController {
       next(error)
     }
   }
-
+  async edit(update) {
+    const origional = await this.getById(update.id)
+    if (origional.creatorId.toString() !== update.creatorId) {
+      throw new Forbidden('not yo house')
+    }
+    origional.bedrooms = update.bedrooms ? update.bedrooms : origional.bedrooms
+    origional.bathrooms = update.bathrooms ? 
+}
   async remove(req, res, next) {
     try {
       const userId = req.userInfo.id
